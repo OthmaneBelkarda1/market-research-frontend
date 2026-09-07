@@ -14,5 +14,5 @@ export default defineConfig({
   },
   // Cible de déploiement Nitro. `NITRO_PRESET` (défini par Vercel/Cloudflare)
   // reste prioritaire, donc le build Lovable/Cloudflare n'est pas cassé.
-  nitro: { preset: process.env.NITRO_PRESET ?? "vercel" },
+  nitro: { preset: process.env["NITRO_PRESET"] ?? "vercel" },
 });

@@ -3,8 +3,20 @@
  * Aucune donnée n'est simulée : en cas d'échec, l'erreur est propagée.
  */
 
+import { BACKEND_PROXY_PREFIX, BACKEND_URL } from "./backend-url";
+
+/**
+ * Base des appels API.
+ *
+ * Dans le navigateur on vise `/api/backend` : le serveur SSR relaie vers le
+ * backend (cf. `src/server.ts`). Les requêtes restent donc same-origin, ce qui
+ * supprime toute dépendance au CORS -- et donc au domaine exact du déploiement,
+ * qui change à chaque preview Vercel.
+ *
+ * Côté serveur, une URL relative n'est pas résolvable : on garde l'absolue.
+ */
 export const API_BASE_URL =
-  import.meta.env["VITE_API_BASE_URL"] ?? "https://market-research-backend-zhz2.onrender.com";
+  typeof window === "undefined" ? BACKEND_URL : BACKEND_PROXY_PREFIX;
 
 export type StudyStatus =
   | "created"
