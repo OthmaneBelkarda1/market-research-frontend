@@ -15,8 +15,7 @@ import { BACKEND_PROXY_PREFIX, BACKEND_URL } from "./backend-url";
  *
  * Côté serveur, une URL relative n'est pas résolvable : on garde l'absolue.
  */
-export const API_BASE_URL =
-  typeof window === "undefined" ? BACKEND_URL : BACKEND_PROXY_PREFIX;
+export const API_BASE_URL = typeof window === "undefined" ? BACKEND_URL : BACKEND_PROXY_PREFIX;
 
 export type StudyStatus =
   | "created"

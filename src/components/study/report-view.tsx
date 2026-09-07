@@ -11,6 +11,7 @@ import { Markdown } from "./markdown";
 import { JsonModal } from "./json-modal";
 import { VERDICT_META, verdictFromReport } from "@/lib/verdict";
 import { cacheVerdict } from "@/lib/verdict-cache";
+import { cacheProduct, getCachedProduct, productNameFromReport } from "@/lib/product-cache";
 
 /**
  * Marqueur de tête du gabarit v2 du rapport F7.
@@ -27,7 +28,7 @@ import { cacheVerdict } from "@/lib/verdict-cache";
  */
 const MARQUEUR_GABARIT_V2 = "<!-- f7:v2 -->";
 
-export function ReportView({ studyId }: { studyId: string }) {
+export function ReportView({ studyId, productId }: { studyId: string; productId?: string | null }) {
   const [jsonOpen, setJsonOpen] = useState(false);
 
   const reportQuery = useQuery({
@@ -49,6 +50,21 @@ export function ReportView({ studyId }: { studyId: string }) {
   useEffect(() => {
     if (verdict) cacheVerdict(studyId, verdict);
   }, [verdict, studyId]);
+
+  const productName = useMemo(
+    () => (reportQuery.data ? productNameFromReport(reportQuery.data) : null),
+    [reportQuery.data],
+  );
+
+  // Même raison pour le nom du produit : aucun endpoint ne le sert, et le titre
+  // de la page comme la liste latérale retombent sinon sur l'identifiant court.
+  // On ne réécrit que sur changement, sinon chaque montage rediffuserait
+  // `product-cache-updated` sans que rien n'ait bougé.
+  useEffect(() => {
+    if (!productId || !productName) return;
+    if (getCachedProduct(productId)?.name === productName) return;
+    cacheProduct(productId, { name: productName });
+  }, [productName, productId]);
 
   const download = () => {
     const report = reportQuery.data;

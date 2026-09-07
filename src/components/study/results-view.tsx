@@ -11,7 +11,7 @@ export function ResultsView({ study, sources }: { study: Study; sources: SourceR
 
   return (
     <div className="space-y-10">
-      <ReportView studyId={study.id} />
+      <ReportView studyId={study.id} productId={study.product_id} />
 
       <div className="space-y-8">
         <AliexpressStrip studyId={study.id} row={row("aliexpress")} />

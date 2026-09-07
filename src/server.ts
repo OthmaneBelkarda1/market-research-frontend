@@ -68,10 +68,16 @@ const HOP_BY_HOP_REQUEST_HEADERS = new Set([
 // `fetch` décompresse déjà le corps ; réémettre `content-encoding` ferait
 // décoder une seconde fois au navigateur, et `content-length` ne vaudrait plus
 // pour le corps décompressé.
-const STRIPPED_RESPONSE_HEADERS = new Set(["content-encoding", "content-length", "transfer-encoding"]);
+const STRIPPED_RESPONSE_HEADERS = new Set([
+  "content-encoding",
+  "content-length",
+  "transfer-encoding",
+]);
 
 async function proxyToBackend(request: Request, url: URL): Promise<Response> {
-  const target = new URL(BACKEND_URL + url.pathname.slice(BACKEND_PROXY_PREFIX.length) + url.search);
+  const target = new URL(
+    BACKEND_URL + url.pathname.slice(BACKEND_PROXY_PREFIX.length) + url.search,
+  );
 
   const headers = new Headers();
   for (const [name, value] of request.headers) {
