@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { api, conflictStudyId, errorMessage, type Product } from "@/lib/api";
 import { cacheProduct } from "@/lib/product-cache";
@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { PageTitle } from "@/components/heading";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +48,6 @@ function NewStudyPage() {
   const [tab, setTab] = useState<"url" | "manuel">("url");
   const [region, setRegion] = useState("MA");
   const [url, setUrl] = useState("");
-  const [useAgent, setUseAgent] = useState(true);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -101,7 +99,7 @@ function NewStudyPage() {
     setBusy(true);
     setStepIndex(0);
     try {
-      const res = await api.extractProduct({ url: url.trim(), region, use_agent: useAgent });
+      const res = await api.extractProduct({ url: url.trim(), region, use_agent: true });
       if (res.warnings?.length) {
         toast.warning(res.warnings.join(" · "));
       }
@@ -193,19 +191,6 @@ function NewStudyPage() {
                 de devise selon la langue du navigateur peut afficher son prix américain : le
                 chiffre extrait reste celui de la page, pas une erreur.
               </p>
-            </div>
-            <div className="flex items-start justify-between gap-4 rounded-xl bg-muted/70 px-4 py-3">
-              <div>
-                <p className="flex items-center gap-1.5 text-sm font-medium">
-                  <Sparkles className="size-3.5 text-primary" />
-                  Extraction assistée par IA
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  Un agent lit la page comme un humain : plus fiable sur les sites complexes, mais
-                  plus lent.
-                </p>
-              </div>
-              <Switch checked={useAgent} onCheckedChange={setUseAgent} disabled={busy} />
             </div>
             <Button type="submit" disabled={busy} className="h-11 w-full rounded-xl">
               {busy ? (
